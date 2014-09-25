@@ -1,20 +1,43 @@
 #include "flib.h"
 #include "sll_root.h"
+#include "door.h"
+
+//constructor::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <class TItemsType>
 TSLLRoot<TItemsType>::TSLLRoot()
-	:m_pFirstItem(0)
+	//:m_pFirstItem(0)
 {
-	GfxDbgPrintf( "TSSLRoot constructor" );
+	GfxDbgPrintf( "TSSLRoot constructor\n" );
+	m_pFirstItem = new TSLLItem<TItemsType>();
 }
 
+
+template <>//TDoor
+TSLLRoot<TDoor>::TSLLRoot()
+//:m_pFirstItem(0)
+{
+	GfxDbgPrintf("TSSLRoot constructor\n");
+	m_pFirstItem = new TSLLItem<TDoor>();
+}
+
+//destructor::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <class TItemsType>
 TSLLRoot<TItemsType>::~TSLLRoot()
 {
-	GfxDbgPrintf( "TSSLRoot destructor" );
+	delete m_pFirstItem;
+	GfxDbgPrintf( "TSSLRoot destructor\n" );
 }
 
+template <>//TDoor
+TSLLRoot<TDoor>::~TSLLRoot()
+{
+	delete m_pFirstItem;
+	GfxDbgPrintf("TSSLRoot destructor\n");
+}
+
+//Methods::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <class TItemsType>
 void TSLLRoot<TItemsType>::Append(TSLLItem<TItemsType> *pNewAppend)

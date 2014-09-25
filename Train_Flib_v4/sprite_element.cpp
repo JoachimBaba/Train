@@ -3,26 +3,29 @@
 //Constructeurs::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 TSpriteElement::TSpriteElement()
-	:m_tPos(TGfxVec2(0.f, 0.f)), m_tSize(TGfxVec2(0.f, 0.f)), m_pTexture( 0 ), m_tNBSprites(TGfxVec2(0.f, 0.f))
+	:m_tPos(TGfxVec2(0.f, 0.f)), m_tSize(TGfxVec2(0.f, 0.f)), m_pTexture( 0 ), m_pSprite( 0 ), m_tNBSprites(TGfxVec2(0.f, 0.f))
 {
-
+	GfxDbgPrintf("TSpriteElement constructor\n");
 }
 
 TSpriteElement::TSpriteElement( TGfxVec2 tPos, TGfxVec2 tSize, char *pTextureLocation )
 	:m_tPos(tPos), m_tSize(tSize), m_pTexture(GfxTextureLoad(pTextureLocation)), m_tNBSprites(TGfxVec2(0.f, 0.f))
 {
+	GfxDbgPrintf("TSpriteElement constructor\n");
 	SpriteSettup();
 }
 
 TSpriteElement::TSpriteElement( TGfxVec2 tPos, TGfxVec2 tSize, TGfxTexture *pTexture )
 	: m_tPos(tPos), m_tSize(tSize), m_pTexture(pTexture), m_tNBSprites(TGfxVec2(0.f, 0.f))
 {
+	GfxDbgPrintf("TSpriteElement constructor\n");
 	SpriteSettup();
 }
 
 TSpriteElement::TSpriteElement( TSpriteElement &TSpriteElement )
 	: m_tPos(TSpriteElement.m_tPos), m_tSize(TSpriteElement.m_tSize), m_pTexture(TSpriteElement.m_pTexture), m_pSprite(TSpriteElement.m_pSprite), m_tNBSprites(TGfxVec2(0.f, 0.f))
 {
+	GfxDbgPrintf("TSpriteElement constructor\n");
 	//Positionnement standard de la sprite
 	GfxSpriteSetPosition(m_pSprite, m_tPos.x, m_tPos.y);
 }
@@ -32,7 +35,12 @@ TSpriteElement::TSpriteElement( TSpriteElement &TSpriteElement )
 
 TSpriteElement::~TSpriteElement()
 {
+	GfxDbgPrintf("TSpriteElement destructor\n");
+
+	if (m_pTexture != 0)
 	GfxTextureDestroy( m_pTexture );
+
+	if (m_pSprite != 0)
 	GfxSpriteDestroy( m_pSprite );
 }
 
@@ -56,26 +64,33 @@ TGfxVec2 TSpriteElement::CalculateSpritesNumberInsideTexture()
 
 void TSpriteElement::SpriteSettup()
 {	
-	//Sprite Offset
-	if (m_tSize.x != 0.f && m_tSize.y != 0.f)//par défault si la taille d'une sprite est assignée à 0 c'est que la sprite prend toute la texture
+	if (m_pTexture != 0)
 	{
-		//Calcul du nombre de sprite dans la texture
-		m_tNBSprites = CalculateSpritesNumberInsideTexture();
-		//Sprite creation
-		m_pSprite = GfxSpriteCreate(m_pTexture, 0, 0, m_tSize.x, m_tSize.y);
+		//Sprite Offset
+		if (m_tSize.x != 0.f && m_tSize.y != 0.f)//par défault si la taille d'une sprite est assignée à 0 c'est que la sprite prend toute la texture
+		{
+			//Calcul du nombre de sprite dans la texture
+			m_tNBSprites = CalculateSpritesNumberInsideTexture();
+			//Sprite creation
+			m_pSprite = GfxSpriteCreate(m_pTexture, 0, 0, m_tSize.x, m_tSize.y);
+		}
+		else
+		{
+			//Sprite creation
+			m_pSprite = GfxSpriteCreate(m_pTexture);
+		}
+
+		//Sprite Scale
+		GfxSpriteSetScale(m_pSprite, PIXEL_SCALE, PIXEL_SCALE);
+		GfxSpriteSetFilteringEnabled(m_pSprite, false);
+
+		//Sprite Positionnement
+		GfxSpriteSetPosition(m_pSprite, m_tPos.x, m_tPos.y);
 	}
 	else
 	{
-		//Sprite creation
-		m_pSprite = GfxSpriteCreate(m_pTexture);
+		GfxDbgAssert(true, "m_pTexture == 0");
 	}
-
-	//Sprite Scale
-	GfxSpriteSetScale(m_pSprite, PIXEL_SCALE, PIXEL_SCALE);
-	GfxSpriteSetFilteringEnabled(m_pSprite, false);
-
-	//Sprite Positionnement
-	GfxSpriteSetPosition(m_pSprite, m_tPos.x, m_tPos.y);
 }
 
 TGfxVec2 TSpriteElement::GetPos() const
