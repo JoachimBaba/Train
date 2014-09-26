@@ -100,6 +100,7 @@
     <ClCompile Include="..\..\..\..\lib\flib\flib_vec2.cpp" />
     <ClCompile Include="door.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="room.cpp" />
     <ClCompile Include="sll_root.cpp" />
     <ClCompile Include="sll_template_item.cpp" />
     <ClCompile Include="sprite_element.cpp" />
